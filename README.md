@@ -1,5 +1,8 @@
 # SDVX in CircuitPython
  SDVX controller in CircuitPython for Raspberry Pi Pico
+ 
+ *WARNING*
+ Flashing/Strobing lights
 
 Installation:
 1. Install CircuitPython
