@@ -69,14 +69,14 @@ pixel_colors = (
 
 pixel_off = (0, 0, 0)
 
-# Gamepad report button number
+# Gamepad report button number (1-16)
 report_button_id = (
-    0,  # BT_A
-    1,  # BT_B
-    2,  # BT_C
-    3,  # BT_D
-    4,  # FX_L
-    5,  # FX_R
+    1,  # BT_A
+    2,  # BT_B
+    3,  # BT_C
+    4,  # BT_D
+    5,  # FX_L
+    6,  # FX_R
     9   # BT_ST
 )
 
@@ -179,7 +179,7 @@ while(True):
             else:
                 pixel_buf[button_event.key_number] = pixel_off
 
-            gamepad_btn[report_button_id[button_event.key_number]] = 1
+            gamepad_btn[report_button_id[button_event.key_number]-1] = 1
 
         if button_event.released:
             if btn_type == "LED":
@@ -187,7 +187,7 @@ while(True):
             else:
                 pixel_buf[button_event.key_number] = pixel_colors[button_event.key_number]
 
-            gamepad_btn[report_button_id[button_event.key_number]] = 0
+            gamepad_btn[report_button_id[button_event.key_number]-1] = 0
 
     gamepad_report[0] = int(''.join(str(x) for x in reversed(gamepad_btn[0:7])), 2)
     gamepad_report[1] = int(''.join(str(x) for x in reversed(gamepad_btn[8:15])), 2)
