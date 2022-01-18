@@ -17,6 +17,7 @@ enc_pins = (
 )
 
 # Button pins, in the order of aRGB leds
+# Max number of button inputs is 16
 btn_pins = (
     board.GP4,   # BT_A
     board.GP6,   # BT_B
