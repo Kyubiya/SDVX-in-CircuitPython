@@ -8,6 +8,7 @@ import board
 enc_ppr = 24
 
 # Encoder pins
+# Swap A and B to reverse. Ex. GP1 to A, and GP0 to B
 enc_pins = (
     board.GP0,  # VOL_L A
     board.GP1,  # VOL_L B
@@ -17,9 +18,9 @@ enc_pins = (
 
 # Button pins, in the order of aRGB leds
 btn_pins = (
-    board.GP4,  # BT_A
-    board.GP6,  # BT_B
-    board.GP8,  # BT_C
+    board.GP4,   # BT_A
+    board.GP6,   # BT_B
+    board.GP8,   # BT_C
     board.GP10,  # BT_D
     board.GP12,  # FX_L
     board.GP14,  # FX_R
@@ -31,9 +32,9 @@ led_btns = True
 
 # LED pins
 led_pins = (
-    board.GP5,  # BT_A
-    board.GP7,  # BT_B
-    board.GP9,  # BT_C
+    board.GP5,   # BT_A
+    board.GP7,   # BT_B
+    board.GP9,   # BT_C
     board.GP11,  # BT_D
     board.GP13,  # FX_L
     board.GP15,  # FX_R
@@ -45,19 +46,20 @@ pixel_pin = board.GP28
 
 pixel_count = 10
 
+# Brightness between 0.0 - 1.0
 pixel_brightness = 0.25
 
-# Colors
+# Colors in (R, G, B) max 255
 pixel_colors = (
     (64, 64, 255),  # BT_A
     (64, 64, 255),  # BT_B
     (64, 64, 255),  # BT_C
     (64, 64, 255),  # BT_D
-    (255, 0, 0),  # FX_L
-    (255, 0, 0),  # FX_R
-    (0, 0, 255),  # BT_ST
-    (16, 8, 255),  # VOL_L
-    (255, 8, 16),  # VOL_R
+    (255, 0, 0),    # FX_L
+    (255, 0, 0),    # FX_R
+    (0, 0, 255),    # BT_ST
+    (16, 8, 255),   # VOL_L
+    (255, 8, 16),   # VOL_R
 )
 
 pixel_off = (0, 0, 0)
@@ -83,3 +85,6 @@ report_keybind = (
     0x10,  # FX_R = M
     0x1E,  # BT_ST = 1
 )
+
+# Mouse speed multiplier
+mouse_speed = 5
