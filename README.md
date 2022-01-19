@@ -1,7 +1,7 @@
 # SDVX in CircuitPython
  SDVX controller in CircuitPython for Raspberry Pi Pico
 
-Written in CircuitPython for ease of changing configuration values without requiring recompiling firmware. Currently, keyboard & mouse mode has a response time of roughly 15ms or 67hz at best. Gamepad mode is probably half of that.
+Written in CircuitPython for ease of changing configuration without requiring recompiling firmware. Currently, keyboard & mouse mode has a response time of roughly 15ms. Gamepad mode is probably half of that.
  
  *WARNING*
  Flashing/Strobing lights

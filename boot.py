@@ -8,7 +8,7 @@ K16RO_REPORT_DESCRIPTOR = bytes((
     0x05, 0x01,        # Usage Page (Generic Desktop Ctrls)
     0x09, 0x06,        # Usage (Keyboard)
     0xA1, 0x01,        # Collection (Application)
-    0x85, 0x01,        #   Report ID (1)
+    0x85, 0x04,        #   Report ID (4)
     0x05, 0x07,        #   Usage Page (Kbrd/Keypad)
     0x19, 0xE0,        #   Usage Minimum (0xE0)
     0x29, 0xE7,        #   Usage Maximum (0xE7)
@@ -37,7 +37,7 @@ k16ro = usb_hid.Device(
     report_descriptor=K16RO_REPORT_DESCRIPTOR,
     usage_page=0x01,           # Generic Desktop Control
     usage=0x06,                # Keyboard
-    report_ids=(1,),           # Descriptor uses report ID 1.
+    report_ids=(4,),           # Descriptor uses report ID 1.
     in_report_lengths=(len(report_keybind) + 2,),   # Length is keybinds + 2
     out_report_lengths=(0,),   # It does not receive any reports.
 )
@@ -48,7 +48,7 @@ XYMOUSE_REPORT_DESCRIPTOR = bytes((
     0xA1, 0x01,        # Collection (Application)
     0x09, 0x01,        #   Usage (Pointer)
     0xA1, 0x00,        #   Collection (Physical)
-    0x85, 0x02,        #     10, 11 Report ID (2)
+    0x85, 0x05,        #     Report ID (5)
     0x05, 0x01,        #     Usage Page (Generic Desktop Ctrls)
     0x09, 0x30,        #     Usage (X)
     0x09, 0x31,        #     Usage (Y)
@@ -65,7 +65,7 @@ xymouse = usb_hid.Device(
     report_descriptor=XYMOUSE_REPORT_DESCRIPTOR,
     usage_page=0x01,           # Generic Desktop Control
     usage=0x02,                # Mouse
-    report_ids=(2,),           # Descriptor uses report ID 2.
+    report_ids=(5,),           # Descriptor uses report ID 2.
     in_report_lengths=(2,),    # This mouse sends 2 bytes in its report.
     out_report_lengths=(0,),   # It does not receive any reports.
 )
@@ -74,7 +74,7 @@ GAMEPAD_REPORT_DESCRIPTOR = bytes((
     0x05, 0x01,  # Usage Page (Generic Desktop Ctrls)
     0x09, 0x05,  # Usage (Game Pad)
     0xA1, 0x01,  # Collection (Application)
-    0x85, 0x04,  #   Report ID (4)
+    0x85, 0x06,  #   Report ID (6)
     0x05, 0x09,  #   Usage Page (Button)
     0x19, 0x01,  #   Usage Minimum (Button 1)
     0x29, 0x10,  #   Usage Maximum (Button 16)
@@ -98,7 +98,7 @@ gamepad = usb_hid.Device(
     report_descriptor=GAMEPAD_REPORT_DESCRIPTOR,
     usage_page=0x01,           # Generic Desktop Control
     usage=0x05,                # Gamepad
-    report_ids=(4,),           # Descriptor uses report ID 4.
+    report_ids=(6,),           # Descriptor uses report ID 4.
     in_report_lengths=(4,),    # This gamepad sends 4 bytes in its report.
     out_report_lengths=(0,),   # It does not receive any reports.
 )

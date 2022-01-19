@@ -1,11 +1,10 @@
-import adafruit_pixelbuf
+from adafruit_pixelbuf import PixelBuf
 import board
-import digitalio
-import keypad
-import neopixel_write
-import rotaryio
-import time
-import usb_hid
+from digitalio import DigitalInOut, Direction, Pull
+from neopixel_write import neopixel_write
+from rotaryio import IncrementalEncoder
+from time import monotonic, sleep
+from usb_hid import devices
 
 # Config file
 from config import (
@@ -27,38 +26,33 @@ from config import (
 # Binary lookup table
 bin_lookup = (1, 2, 4, 8, 16, 32, 64, 128)
 
+buttons = [DigitalInOut(x) for x in btn_pins]
+for x in buttons:
+    x.direction = Direction.INPUT
+    x.pull = Pull.UP
+
 # Keyboard & Mouse mode check
 # Hold BT-A while plugging in controller
-kbm_mode = True
-kbm_check = digitalio.DigitalInOut(btn_pins[0])
-kbm_check.direction = digitalio.Direction.INPUT
-kbm_check.pull = digitalio.Pull.UP
-
-# Wait to verify button is held
-time.sleep(0.5)
+kbm_mode = False
 
 # Wait until button is released
-while not kbm_check.value:
+while not buttons[0].value:
     if not kbm_mode:
-        kbm_mode = False
-    time.sleep(1)
-
-# Release GPIO pin
-kbm_check.deinit()
+        kbm_mode = True
 
 # Subclass to use built in pixel buffer
 # Needed IO pin and _transmit()
-class pixelBuffer(adafruit_pixelbuf.PixelBuf):
+class pixelBuffer(PixelBuf):
     def __init__(self, pin: board.Pin, size, byteorder, brightness, auto_write):
         super().__init__(
             size=size, byteorder=byteorder, brightness=brightness, auto_write=auto_write
         )
 
-        self.pin = digitalio.DigitalInOut(pin)
-        self.pin.direction = digitalio.Direction.OUTPUT
+        self.pin = DigitalInOut(pin)
+        self.pin.direction = Direction.OUTPUT
 
     def _transmit(self, buffer: bytearray) -> None:
-        neopixel_write.neopixel_write(self.pin, buffer)
+        neopixel_write(self.pin, buffer)
 
 
 # Create pixel buffer
@@ -77,16 +71,12 @@ if not led_btns:
         pixel_buf[x] = pixel_colors[x]
 
 # Set LED pins
-btn_leds = [digitalio.DigitalInOut(x) for x in led_pins]
+btn_leds = [DigitalInOut(x) for x in led_pins]
 for x in btn_leds:
-    x.direction = digitalio.Direction.OUTPUT
-
-# Set button input
-buttons = keypad.Keys(btn_pins, value_when_pressed=False, pull=True, interval=0.001)
-btn_event = keypad.Event()
+    x.direction = Direction.OUTPUT
 
 # Set HID devices to be used
-for x in usb_hid.devices:
+for x in devices:
     if kbm_mode:
         if x.usage == 0x06:
             keyboard = x
@@ -104,10 +94,10 @@ else:
     mouse_delta = 0
 
 # Set encoders
-encoders = [
-    rotaryio.IncrementalEncoder(enc_pins[0], enc_pins[1]),
-    rotaryio.IncrementalEncoder(enc_pins[2], enc_pins[3]),
-]
+encoders = (
+    IncrementalEncoder(enc_pins[0], enc_pins[1]),
+    IncrementalEncoder(enc_pins[2], enc_pins[3]),
+)
 
 prev_enc_pos = [0, 0]
 cur_pos = None
@@ -119,9 +109,10 @@ if led_btns:
     pixel_buf[enc_led_pos[1]] = pixel_colors[len(btn_pins) + 1]
 
 # Time trackers
-cur_time = time.monotonic()
+cur_time = monotonic()
 enc_last_ch = [cur_time, cur_time]
 enc_led_ch = [cur_time, cur_time]
+
 
 # Main loop to poll inputs
 while True:
@@ -130,7 +121,7 @@ while True:
         # Save position
         cur_pos = encoders[x].position
         # Save current time
-        cur_time = time.monotonic()
+        cur_time = monotonic()
 
         # Encoder moved
         if prev_enc_pos[x] != cur_pos:
@@ -187,51 +178,47 @@ while True:
                 # Check if not already off
                 and pixel_buf[len(btn_pins) + x] != pixel_off
                 # Check if encoder stopped moving
-                and (cur_time - enc_last_ch[x]) > 0.5
+                and (cur_time - enc_last_ch[x]) > 0.2
             ):
                 pixel_buf[len(btn_pins) + x] = pixel_off
-            if "mouse" in locals() and mouse_report[x] != 0:
-                mouse_report[x] = 0
 
-    # Check for button event
-    if buttons.events.get_into(btn_event):
-        if btn_event.pressed:
+    # Scan buttons
+    for x in range(0, len(buttons)):
+        if not buttons[x].value:
             # Reactive button lights
             if led_btns:
-                btn_leds[btn_event.key_number].value = True
+                btn_leds[x].value = True
             else:
-                pixel_buf[btn_event.key_number] = pixel_off
+                pixel_buf[x] = pixel_off
             # Mark button as pressed
             if "gamepad" in locals():
-                gpd_temp = report_btn_id[btn_event.key_number] - 1
+                gpd_temp = report_btn_id[x] - 1
                 if gpd_temp < 8:
                     gamepad_report[0] += bin_lookup[gpd_temp]
                 else:
                     gamepad_report[1] += bin_lookup[gpd_temp % 8]
             else:
-                keyboard_report[btn_event.key_number + 2] = report_keybind[
-                    btn_event.key_number
-                ]
-        # btn_event.released
+                keyboard_report[x + 2] = report_keybind[x]
         else:
             # Reactive button lights
             if led_btns:
-                btn_leds[btn_event.key_number].value = False
+                btn_leds[x].value = False
             else:
-                pixel_buf[btn_event.key_number] = pixel_colors[btn_event.key_number]
-            # Mark button as not pressed
-            if "gamepad" in locals():
-                gpd_temp = report_btn_id[btn_event.key_number] - 1
-                if gpd_temp < 8:
-                    gamepad_report[0] -= bin_lookup[gpd_temp]
-                else:
-                    gamepad_report[1] -= bin_lookup[gpd_temp % 8]
-            else:
-                keyboard_report[btn_event.key_number + 2] = 0x00
-
+                pixel_buf[x] = pixel_colors[x]
     # Send HID reports
     if "gamepad" in locals():
         gamepad.send_report(gamepad_report)
+        if gamepad_report[0] != 0:
+            gamepad_report[0] = 0
+        if gamepad_report[1] != 0:
+            gamepad_report[1] = 0
     else:
         keyboard.send_report(keyboard_report)
+        for x in range(1, len(keyboard_report)):
+            if keyboard_report[x] != 0:
+                keyboard_report[x] = 0
         mouse.send_report(mouse_report)
+        if mouse_report[0] != 0:
+            mouse_report[0] = 0
+        if mouse_report[1] != 0:
+            mouse_report[1] = 0
