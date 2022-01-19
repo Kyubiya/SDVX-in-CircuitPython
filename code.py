@@ -29,7 +29,7 @@ bin_lookup = (1, 2, 4, 8, 16, 32, 64, 128)
 
 # Keyboard & Mouse mode check
 # Hold BT-A while plugging in controller
-kbm_mode = False
+kbm_mode = True
 kbm_check = digitalio.DigitalInOut(btn_pins[0])
 kbm_check.direction = digitalio.Direction.INPUT
 kbm_check.pull = digitalio.Pull.UP
@@ -40,7 +40,7 @@ time.sleep(0.5)
 # Wait until button is released
 while not kbm_check.value:
     if not kbm_mode:
-        kbm_mode = True
+        kbm_mode = False
     time.sleep(1)
 
 # Release GPIO pin
@@ -67,7 +67,7 @@ pixel_buf = pixelBuffer(
     pixel_count,
     byteorder="GRB",
     brightness=pixel_brightness,
-    auto_write=False,
+    auto_write=True,
 )
 
 # WS2812B behavior is inverse of LED
@@ -82,7 +82,7 @@ for x in btn_leds:
     x.direction = digitalio.Direction.OUTPUT
 
 # Set button input
-buttons = keypad.Keys(btn_pins, value_when_pressed=False, pull=True, interval=0.01)
+buttons = keypad.Keys(btn_pins, value_when_pressed=False, pull=True, interval=0.001)
 btn_event = keypad.Event()
 
 # Set HID devices to be used
@@ -98,12 +98,10 @@ for x in usb_hid.devices:
 if "gamepad" in locals():
     gamepad_report = bytearray(4)
     gpd_temp = None
-if "keyboard" in locals():
-    keyboard_report = bytearray(18)
-if "mouse" in locals():
+else:
+    keyboard_report = bytearray(2 + len(report_keybind))
     mouse_report = bytearray(2)
     mouse_delta = 0
-
 
 # Set encoders
 encoders = [
@@ -237,6 +235,3 @@ while True:
     else:
         keyboard.send_report(keyboard_report)
         mouse.send_report(mouse_report)
-
-    # Update WS2812B
-    pixel_buf.show()

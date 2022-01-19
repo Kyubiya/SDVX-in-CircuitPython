@@ -1,5 +1,6 @@
 import usb_hid
 import usb_midi
+from config import report_keybind
 
 usb_midi.disable()
 
@@ -21,7 +22,7 @@ K16RO_REPORT_DESCRIPTOR = bytes((
     0x81, 0x01,        #   Input (Const,Array,Abs,No Wrap,Linear,Preferred State,No Null Position)
     0x95, 0x03,        #   Report Count (3)
     0x75, 0x01,        #   Report Size (1)
-    0x95, 0x10,        #   Report Count (16)
+    0x95, len(report_keybind),        #   Report Count (# of keybinds)
     0x75, 0x08,        #   Report Size (8)
     0x15, 0x00,        #   Logical Minimum (0)
     0x26, 0xFF, 0x00,  #   Logical Maximum (255)
@@ -37,7 +38,7 @@ k16ro = usb_hid.Device(
     usage_page=0x01,           # Generic Desktop Control
     usage=0x06,                # Keyboard
     report_ids=(1,),           # Descriptor uses report ID 1.
-    in_report_lengths=(18,),   # This keyboard sends 16 bytes in its report.
+    in_report_lengths=(len(report_keybind) + 2,),   # Length is keybinds + 2
     out_report_lengths=(0,),   # It does not receive any reports.
 )
 
