@@ -44,7 +44,7 @@ kb = usb_hid.Device(
     report_descriptor=KB_REPORT_DESCRIPTOR,
     usage_page=0x01,           # Generic Desktop Control
     usage=0x06,                # Keyboard
-    report_ids=(4,),           # Descriptor uses report ID 1.
+    report_ids=(4,),           # Descriptor uses report ID 4.
     in_report_lengths=(len(report_keybind) + 4,),   # Length is 2 header + keybinds + 2 encoder keybinds
     out_report_lengths=(0,),   # It does not receive any reports.
 )
@@ -76,7 +76,7 @@ xymouse = usb_hid.Device(
     report_descriptor=XYMOUSE_REPORT_DESCRIPTOR,
     usage_page=0x01,           # Generic Desktop Control
     usage=0x02,                # Mouse
-    report_ids=(5,),           # Descriptor uses report ID 2.
+    report_ids=(5,),           # Descriptor uses report ID 5.
     in_report_lengths=(2,),    # This mouse sends 2 bytes in its report.
     out_report_lengths=(0,),   # It does not receive any reports.
 )
