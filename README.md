@@ -20,4 +20,6 @@ https://learn.adafruit.com/getting-started-with-raspberry-pi-pico-circuitpython/
 
 2. Copy boot.py, code.py, and config.py to CIRCUITPY drive
 
-3. Hold BT-A while plugging in controller for Keyboard only mode, and BT-D for Keyboard and Mouse mode
+3. Unplug controller to reboot
+
+4. Hold BT-A while plugging in controller for Keyboard only mode, and BT-D for Keyboard and Mouse mode
