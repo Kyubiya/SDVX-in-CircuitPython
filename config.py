@@ -32,6 +32,7 @@ btn_pins = (
 led_btns = True
 
 # LED pins
+# Match btn_pins order
 led_pins = (
     board.GP5,   # BT-A
     board.GP7,   # BT-B
@@ -51,6 +52,7 @@ pixel_count = 10
 pixel_brightness = 0.25
 
 # Colors in (R, G, B) max 255
+# Match btn_pins order + VOL-L + VOL-R
 pixel_colors = (
     (64, 64, 255),  # BT-A
     (64, 64, 255),  # BT-B
@@ -66,6 +68,7 @@ pixel_colors = (
 pixel_off = (0, 0, 0)
 
 # Gamepad report button number (1-16)
+# Match btn_pins order
 report_btn_id = (
     1,  # BT-A
     2,  # BT-B
@@ -77,6 +80,7 @@ report_btn_id = (
 )
 
 # Keybinds
+# Match btn_pins order
 report_keybind = (
     0x07,  # BT-A = D
     0x09,  # BT-B = F
@@ -87,6 +91,7 @@ report_keybind = (
     0x1E,  # BT-ST = 1
 )
 
+# Keybinds for VOL-L and VOL-R
 enc_keybind = (
     0x4f,   # VOL-L+ = Right
     0x50,   # VOL-L- = Left
