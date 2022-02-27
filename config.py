@@ -1,7 +1,28 @@
 import board
 
 #
-# Controller config
+#   REFERENCE SECTION
+#   DO NOT CHANGE
+#
+
+# Keybinds reference
+# Check https://deskthority.net/wiki/Scancode for more
+(KEY_A, KEY_B, KEY_C, KEY_D, KEY_E, KEY_F, KEY_G, KEY_H, KEY_I, KEY_J, KEY_K, KEY_L,
+ KEY_M, KEY_N, KEY_O, KEY_P, KEY_Q, KEY_R, KEY_S, KEY_T, KEY_U, KEY_V, KEY_W, KEY_X,
+ KEY_Y, KEY_Z, KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9, KEY_0,
+ KEY_ENT, KEY_ESC, KEY_BAC, KEY_TAB, KEY_SPA, KEY_MIN, KEY_PLU, KEY_LBR, KEY_RBR,
+ KEY_FSL, KEY_POU, KEY_COL, KEY_APO, KEY_TIL, KEY_COM, KEY_PER, KEY_QUE, KEY_CAP,
+ KEY_F1, KEY_F2, KEY_F3, KEY_F4, KEY_F5, KEY_F6, KEY_F7, KEY_F8, KEY_F9, KEY_F10,
+ KEY_F11, KEY_F12, KEY_PRT, KEY_SCR, KEY_PAU, KEY_INS, KEY_HOM, KEY_PGU, KEY_DEL,
+ KEY_END, KEY_PGD, KEY_RIG, KEY_LEF, KEY_DOW, KEY_UP) = range(4, 83)
+
+#
+#   END REFERENCE SECTION
+#
+
+#
+# CONTROLLER CONFIG
+# Edit variables below
 #
 
 # Encoder ppr
@@ -16,32 +37,49 @@ enc_pins = (
     board.GP3,  # VOL-R B
 )
 
-# Button pins, in the order of aRGB leds
+# Encoder WS2812b address
+enc_addr = (7, 8) # VOL-L, VOL-R
+
+# Encoder WS2812b colors
+# (Red, Green, Blue)
+# Range 0-255
+enc_colors = (
+    (16, 8, 255),   # VOL-L On
+    (255, 8, 16),   # VOL-R On
+    (0, 0, 0),      # VOL-L Off
+    (0, 0, 0),      # VOL-R Off
+    )
+
+# Keybinds for VOL-L and VOL-R
+enc_keybind = (
+    KEY_RIG,   # VOL-L+ = Right Arrow
+    KEY_UP,   # VOL-R+ = Up Arrow
+    KEY_LEF,   # VOL-L- = Left Arrow
+    KEY_DOW,   # VOL-R- = Down Arrow
+)
+
+# Button maps
 # Max number of button inputs is 16
-btn_pins = (
-    board.GP4,   # BT-A
-    board.GP6,   # BT-B
-    board.GP8,   # BT-C
-    board.GP10,  # BT-D
-    board.GP12,  # FX-L
-    board.GP14,  # FX-R
-    board.GP20,  # BT-ST
+# (GPIO pin, Gamepad ID, key code, LED pin, WS2812b address, pressed color, released color
+#  0         1           2         3        4                5              6
+# Gamepad ID as reported in Windows, starts at 1
+# GPIO and gamepad ID are required sections
+# Use None for unused LED pin, WS2812b address, key code, colors
+# If WS2812b address is set, you must have both colors set
+# Colors are (Red, Green, Blue) range 0-255
+btn_map = (
+    (board.GP4, 1, KEY_D, board.GP5, 0, (0, 0, 0), (192, 192, 255)),         # BT-A  = D
+    (board.GP6, 2, KEY_F, board.GP7, 1, (0, 0, 0), (192, 192, 255)),         # BT-B  = F
+    (board.GP8, 3, KEY_J, board.GP9, 2, (0, 0, 0), (192, 192, 255)),         # BT-C  = J
+    (board.GP10, 4, KEY_K, board.GP11, 3, (0, 0, 0), (192, 192, 255)),       # BT-D  = K
+    (board.GP12, 5, KEY_C, board.GP13, 4, (0, 0, 0), (255, 0, 0)),           # FX-L  = C
+    (board.GP14, 6, KEY_M, board.GP15, 5, (0, 0, 0), (255, 0, 0)),           # FX-R  = M
+    (board.GP20, 9, KEY_1, board.GP21, 6, (0, 0, 0), (0, 0, 255)),           # BT-ST = 1
+    (board.GP27, 7, KEY_BAC, None, None, None, None),                      # Extra = Backspace
 )
 
 # Are the buttons LED or WS2812B?
 led_btns = True
-
-# LED pins
-# Match btn_pins order
-led_pins = (
-    board.GP5,   # BT-A
-    board.GP7,   # BT-B
-    board.GP9,   # BT-C
-    board.GP11,  # BT-D
-    board.GP13,  # FX-L
-    board.GP15,  # FX-R
-    board.GP21,  # BT-ST
-)
 
 # WS2812b pin
 pixel_pin = board.GP28
@@ -49,55 +87,7 @@ pixel_pin = board.GP28
 pixel_count = 10
 
 # Brightness between 0.0 - 1.0
-pixel_brightness = 0.25
-
-# Colors in (R, G, B) max 255
-# Match btn_pins order + VOL-L + VOL-R
-pixel_colors = (
-    (64, 64, 255),  # BT-A
-    (64, 64, 255),  # BT-B
-    (64, 64, 255),  # BT-C
-    (64, 64, 255),  # BT-D
-    (255, 0, 0),    # FX-L
-    (255, 0, 0),    # FX-R
-    (0, 0, 255),    # BT-ST
-    (16, 8, 255),   # VOL-L
-    (255, 8, 16),   # VOL-R
-)
-
-pixel_off = (0, 0, 0)
-
-# Gamepad report button number (1-16)
-# Match btn_pins order
-report_btn_id = (
-    1,  # BT-A
-    2,  # BT-B
-    3,  # BT-C
-    4,  # BT-D
-    5,  # FX-L
-    6,  # FX-R
-    9,  # BT-ST
-)
-
-# Keybinds
-# Match btn_pins order
-report_keybind = (
-    0x07,  # BT-A = D
-    0x09,  # BT-B = F
-    0x0D,  # BT-C = J
-    0x0E,  # BT-D = K
-    0x06,  # FX-L = C
-    0x10,  # FX-R = M
-    0x1E,  # BT-ST = 1
-)
-
-# Keybinds for VOL-L and VOL-R
-enc_keybind = (
-    0x4f,   # VOL-L+ = Right
-    0x50,   # VOL-L- = Left
-    0x51,   # VOL-R+ = Down
-    0x52    # VOL-R- = Up
-)
+pixel_brightness = 0.4
 
 # Mouse speed multiplier
 mouse_speed = 5

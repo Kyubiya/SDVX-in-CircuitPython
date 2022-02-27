@@ -1,6 +1,6 @@
 import usb_hid
 import usb_midi
-from config import report_keybind
+from config import btn_map
 
 # Disable midi device
 usb_midi.disable()
@@ -29,7 +29,7 @@ KB_REPORT_DESCRIPTOR = bytes((
     0x81, 0x01,        #   Input (Const,Array,Abs,No Wrap,Linear,Preferred State,No Null Position)
     0x95, 0x03,        #   Report Count (3)
     0x75, 0x01,        #   Report Size (1)
-    0x95, (len(report_keybind) + 2),        #   Report Count (keybinds + 2 enc)
+    0x95, (len(btn_map) + 2),        #   Report Count (keybinds + 2 enc)
     0x75, 0x08,        #   Report Size (8)
     0x15, 0x00,        #   Logical Minimum (0)
     0x26, 0xFF, 0x00,  #   Logical Maximum (255)
@@ -45,7 +45,7 @@ kb = usb_hid.Device(
     usage_page=0x01,           # Generic Desktop Control
     usage=0x06,                # Keyboard
     report_ids=(4,),           # Descriptor uses report ID 4.
-    in_report_lengths=(len(report_keybind) + 4,),   # Length is 2 header + keybinds + 2 encoder keybinds
+    in_report_lengths=(len(btn_map) + 4,),   # Length is 2 header + keybinds + 2 encoder keybinds
     out_report_lengths=(0,),   # It does not receive any reports.
 )
 
