@@ -82,11 +82,12 @@ pixel_buf = pixelBuffer(
 #
 # Set LED pins
 #
-btn_leds = [x[LED_PIN] for x in btn_map]
-for x in range(len(btn_leds)):
-    if btn_leds[x] is not None:
-        btn_leds[x] = DigitalInOut(btn_leds[x])
-        btn_leds[x].direction = Direction.OUTPUT
+if led_btns:
+    btn_leds = [x[LED_PIN] for x in btn_map]
+    for x in range(len(btn_leds)):
+        if btn_leds[x] is not None:
+            btn_leds[x] = DigitalInOut(btn_leds[x])
+            btn_leds[x].direction = Direction.OUTPUT
 
 #
 # Find HID devices to be used
